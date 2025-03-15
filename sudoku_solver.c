@@ -1,6 +1,6 @@
 #include "sudoku.h"
+#include <stdbool.h>
 
-// Define global variables (only here, not in the header)
 Board workingBoard;
 Board initialBoard;
 Board solvedBoard;
@@ -98,10 +98,21 @@ int countSolutions(Board board) {
     return count;
 }
 
-void removeCells(Board board, int cluesToKeep) {
+bool removeCellsWithLimit(Board board, int cluesToKeep) {
     int totalCells = SIZE * SIZE;
     int cellsToRemove = totalCells - cluesToKeep;
+    int iterationCount = 0;
+    const int MAX_ITERATIONS = 1000;
+
     while (cellsToRemove > 0) {
+        iterationCount++;
+        if (iterationCount % 200 == 0) {
+            printf("Attempting to remove cells... %d iterations so far.\n", iterationCount);
+        }
+        if (iterationCount > MAX_ITERATIONS) {
+            return false;
+        }
+
         int row = rand() % SIZE;
         int col = rand() % SIZE;
         if (board[row][col] != 0) {
@@ -117,27 +128,46 @@ void removeCells(Board board, int cluesToKeep) {
             }
         }
     }
+    return true;
 }
 
 void generatePuzzle(Board board, int difficulty) {
-    // Clear board.
-    for (int i = 0; i < SIZE; i++)
-        for (int j = 0; j < SIZE; j++)
-            board[i][j] = 0;
-    
-    if (!generateCompleteBoard(board)) {
-        fprintf(stderr, "Error generating complete board.\n");
-        exit(1);
-    }
-    
     int cluesToKeep;
     switch (difficulty) {
-        case 1: cluesToKeep = 49; break;
-        case 2: cluesToKeep = 35; break;
-        case 3: cluesToKeep = 31; break;
-        default: cluesToKeep = 24; break;
+        case 1: cluesToKeep = 49; break; // Easy
+        case 2: cluesToKeep = 35; break; // Medium
+        case 3: cluesToKeep = 31; break; // Hard
+        default: cluesToKeep = 22; break; // Brutal
     }
-    removeCells(board, cluesToKeep);
+
+    // We'll attempt multiple times to create a puzzle with the desired # of clues.
+    const int MAX_RETRIES = 500;
+    for (int attempt = 0; attempt < MAX_RETRIES; attempt++) {
+        printf("Starting with attempt nr. %d to generate a puzzle\n", attempt+1);
+        // 1. Clear board
+        for (int i = 0; i < SIZE; i++)
+            for (int j = 0; j < SIZE; j++)
+                board[i][j] = 0;
+
+        // 2. Generate a fully solved board
+        if (!generateCompleteBoard(board)) {
+            fprintf(stderr, "Error generating complete board.\n");
+            continue; // try again
+        }
+
+        // 3. Try to remove cells
+        if (removeCellsWithLimit(board, cluesToKeep)) {
+            // Success, we got a puzzle with unique solution & # of clues
+            return;
+        }
+        // If removeCellsWithLimit() fails, we try again
+    }
+
+    // If we exit the loop, we failed to create a puzzle after MAX_RETRIES.
+    // You could handle that gracefully:
+    fprintf(stderr, "Failed to create puzzle with %d clues after %d attempts.\n",
+            (SIZE*SIZE) - cluesToKeep, MAX_RETRIES);
+    exit(1);
 }
 
 int solveSudoku(Board brd) {

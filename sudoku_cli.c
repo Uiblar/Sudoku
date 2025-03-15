@@ -3,7 +3,7 @@
 
 int promptDifficulty(void) {
     int diff;
-    printf("Select difficulty (1 = Easy, 2 = Medium, 3 = Hard, 4 = Brutal ");
+    printf("Select difficulty (1 = Easy, 2 = Medium, 3 = Hard, 4 = Brutal): ");
     scanf("%d", &diff);
     getchar(); // consume newline
     return diff;
