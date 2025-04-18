@@ -1,4 +1,19 @@
+# Build artifacts
+build/
+build-*/
 *.o
 *.exe
 *.out
-build/
+*.d
+
+# User-specific files
+savegame.txt
+
+# IDE specific files (CodeLite)
+.codelite/
+*.tags
+*.session
+*.workspace.*
+
+# Tooling cache (clangd)
+.cache/
