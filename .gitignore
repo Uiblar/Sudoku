@@ -4,6 +4,7 @@ build-*/
 *.o
 *.exe
 *.out
+bin/
 *.d
 
 # User-specific files
