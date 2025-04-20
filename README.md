@@ -12,10 +12,10 @@ This is a command-line Sudoku game implemented in C.
 - [x] Save and load game progress to/from `savegame.txt`.
 - [x] Solution submission and validation.
 - [x] Basic command-line interface for interaction.
+- [x] **Input Validation:** Enhance input validation to handle more edge cases and provide clearer error messages (e.g., invalid coordinates, non-numeric input).
 
 ## TODO
 
-- [ ] **Input Validation:** Enhance input validation to handle more edge cases and provide clearer error messages (e.g., invalid coordinates, non-numeric input).
 - [ ] **More Hint Techniques:** Implement additional Sudoku solving techniques for hints (e.g., Naked/Hidden Pairs/Triples/Quads, X-Wing, Swordfish).
 - [ ] **Difficulty Algorithm:** Refine the puzzle generation difficulty algorithm. Currently, it might rely heavily on the number of clues removed; consider incorporating the complexity of solving techniques required.
 - [ ] **User Interface:** Add terminal compatibility checks for existing ANSI color codes used for UI presentation.
