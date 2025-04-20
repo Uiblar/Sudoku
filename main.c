@@ -33,54 +33,79 @@ int main(void) {
         printf("Enter a move (e.g., A5:9) or command check(c), hint(h), resolve(r), save(s), load(l), submit, quit(q): ");
         fgets(input, sizeof(input), stdin);
 
-        if (parseInput(input, &row, &col, &value, command)) {
-            if (strcmp(command, "move") == 0) {
-                if (validateMove(row, col, value)) {
-                    updateBoardCell(row, col, value);
-                } else {
-                    printf("Invalid move.\n");
-                }
-            } else if (strcmp(command, "check") == 0) {
-                if (checkBoard())
-                    printf("Errors found.\n");
-                else
-                    printf("No errors found.\n");
-            } else if (strcmp(command, "hint") == 0) {
-                int hr, hc, hv;
+        // Input validation
+        if (input[0] == '\n' || strlen(input) >= sizeof(input) - 1) {
+            printf("Invalid input. Please try again.\n");
+            continue;
+        }
+
+        // Analyse input
+        if (!parseInput(input, &row, &col, &value, command)) {
+            printf("Invalid input format. Please use the format e.g., A5:9 or a command.\n");
+            continue;
+        }
+
+        // Validate cell coordinates
+        if (strcmp(command, "move") == 0) {
+            if (row < 0 || row >= SIZE || col < 0 || col >= SIZE) {
+                printf("Invalid cell coordinates. Please use A to I and 1 to 9.\n");
+                continue;
+            }
+
+            // Validate value
+            if (value < 1 || value > 9) {
+                printf("Invalid value. Please use numbers from 1 to 9.\n");
+                continue;
+            }
+
+            // Move validation
+            if (validateMove(row, col, value)) {
+                updateBoardCell(row, col, value);
+            } else {
+                printf("Invalid move.\n");
+            }
+        } else if (strcmp(command, "check") == 0) {
+            if (checkBoard())
+                printf("Errors found.\n");
+            else
+                printf("No errors found.\n");
+        } else if (strcmp(command, "hint") == 0) {
+            int hr, hc, hv;
             char rule[50];  // Buffer to hold the rule string.
             if (provideHint(&hr, &hc, &hv, rule))
                 printf("Hint: %c%d = %d (%s)\n", 'A' + hr, hc + 1, hv, rule);
             else
                 printf("No hint available.\n");
-            } else if (strcmp(command, "resolve") == 0) {
-                // For each non-clue cell, if it's empty or incorrect, fill it with solvedBoard value.
-                for (int r = 0; r < SIZE; r++) {
-                    for (int c = 0; c < SIZE; c++) {
-                        if (initialBoard[r][c] == 0) {
-                            if (workingBoard[r][c] == 0 || workingBoard[r][c] != solvedBoard[r][c]) {
-                                workingBoard[r][c] = solvedBoard[r][c];
-                                solverChanges[r][c] = 1;
-                            }
+        } else if (strcmp(command, "resolve") == 0) {
+            // For each non-clue cell, if it is empty or incorrect, fill with solvedBoard value.
+            for (int r = 0; r < SIZE; r++) {
+                for (int c = 0; c < SIZE; c++) {
+                    if (initialBoard[r][c] == 0) {
+                        if (workingBoard[r][c] == 0 || workingBoard[r][c] != solvedBoard[r][c]) {
+                            workingBoard[r][c] = solvedBoard[r][c];
+                            solverChanges[r][c] = 1;
                         }
                     }
                 }
-                printf("Puzzle resolved by system.\n");
-                displayBoard();
-                break;
-            } else if (strcmp(command, "save") == 0) {
-                if (saveGame() == 0)
-                    printf("Game saved.\n");
-            } else if (strcmp(command, "load") == 0) {
-                if (loadGame() == 0)
-                    printf("Game loaded.\n");
-            } else if (strcmp(command, "submit") == 0) {
-                if (isSolved())
-                    printf("Congratulations! You solved the puzzle.\n");
-                else
-                    printf("Puzzle is not yet solved.\n");
-            } else if (strcmp(command, "quit") == 0) {
-                running = 0;
             }
+            printf("Puzzle resolved by system.\n");
+            displayBoard();
+            break;
+        } else if (strcmp(command, "save") == 0) {
+            if (saveGame() == 0)
+                printf("Game saved.\n");
+        } else if (strcmp(command, "load") == 0) {
+            if (loadGame() == 0)
+                printf("Game loaded.\n");
+        } else if (strcmp(command, "submit") == 0) {
+            if (isSolved())
+                printf("Congratulations! You solved the puzzle.\n");
+            else
+                printf("Puzzle is not yet solved.\n");
+        } else if (strcmp(command, "quit") == 0) {
+            running = 0;
+        } else {
+            printf("Unknown command. Please try again.\n");
         }
     }
 

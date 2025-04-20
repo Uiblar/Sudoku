@@ -3,10 +3,20 @@
 
 int promptDifficulty(void) {
     int diff;
-    printf("Select difficulty (1 = Easy, 2 = Medium, 3 = Hard, 4 = Brutal): ");
-    scanf("%d", &diff);
-    getchar(); // consume newline
-    return diff;
+    while (1) {
+        printf("Select difficulty (1 = Easy, 2 = Medium, 3 = Hard, 4 = Brutal): ");
+        if (scanf("%d", &diff) != 1) {
+            printf("Invalid input. Please enter a number between 1 and 4.\n");
+            while (getchar() != '\n');
+            continue;
+        }
+        if (diff >= 1 && diff <= 4) {
+            getchar(); // consume newline
+            return diff;
+        } else {
+            printf("Invalid difficulty. Please enter a number between 1 and 4.\n");
+        }
+    }
 }
 
 void displayBoard(void) {
