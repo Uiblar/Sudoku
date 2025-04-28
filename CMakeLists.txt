@@ -10,6 +10,8 @@ set(SRC_FILES
         sudoku_cli.c
         sudoku_hint.c
         sudoku_solver.c
+        save_load.c
+        save_load.h
 )
 
 # Output directories

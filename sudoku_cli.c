@@ -19,6 +19,40 @@ int promptDifficulty(void) {
     }
 }
 
+int startGame(void) {
+    char choice;
+    while (1) {
+        printf("Welcome to CLI Sudoku.\n");
+        printf("New Game (n) or load previous game (l)? ");
+        scanf(" %c", &choice);
+
+        if (choice == 'n' || choice == 'N') {
+            return 1; // New game
+        } else if (choice == 'l' || choice == 'L') {
+            if (loadGame() == 0) {
+                printf("Loaded previous game successfully.\n");
+                return 0; // Load game
+            } else {
+                printf("Failed to load the game. Please try again.\n");
+            }
+        } else {
+            printf("Invalid choice. Please enter 'n' for a new game or 'l' to load a game.\n");
+        }
+    }
+}
+
+void trimInput(char *input) {
+    size_t len = strlen(input);
+    if (len > 0 && input[len - 1] == '\n') {
+        input[len - 1] = '\0';
+    }
+}
+
+void clearInputBuffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
 void displayBoard(void) {
     printf("      1  2  3   4  5  6   7  8  9\n");
     const char *line = "    +---------+---------+---------+\n";
@@ -28,22 +62,23 @@ void displayBoard(void) {
         printf("  %c |", 'A' + i);
         for (int j = 0; j < SIZE; j++) {
             if (initialBoard[i][j] != 0) {
-                // Initial clue: cyan.
+                // Vorgabewerte: Cyan.
                 printf(COLOR_CYAN " %d " COLOR_RESET, workingBoard[i][j]);
             } else {
                 if (workingBoard[i][j] == 0) {
-                    // Empty cell.
+                    // Leeres Feld: "."
                     printf(" . ");
                 } else {
-                    // User move exists.
+                    // Benutzereingabe.
                     if (workingBoard[i][j] == solvedBoard[i][j]) {
-                        // Correct move.
-                        if (solverChanges[i][j] == 1)
+                        // Korrekte Eingabe: Weiß oder Grün.
+                        if (solverChanges[i][j] == 1) {
                             printf(COLOR_GREEN " %d " COLOR_RESET, workingBoard[i][j]);
-                        else
+                        } else {
                             printf(COLOR_WHITE " %d " COLOR_RESET, workingBoard[i][j]);
+                        }
                     } else {
-                        // Incorrect move.
+                        // Falsche Eingabe: Rot.
                         printf(COLOR_RED " %d " COLOR_RESET, workingBoard[i][j]);
                     }
                 }
@@ -138,38 +173,6 @@ int provideHint(int *outRow, int *outCol, int *outVal, char *rule) {
             }
         }
     }
-    return 0;
-}
-
-int saveGame(void) {
-    FILE *fp = fopen(SAVE_FILENAME, "w");
-    if (!fp) {
-        fprintf(stderr, "Error opening file %s: %s\n", SAVE_FILENAME, strerror(errno));
-        return -1;
-    }
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            fprintf(fp, "%d ", workingBoard[i][j]);
-        }
-        fprintf(fp, "\n");
-    }
-    fclose(fp);
-    printf("Game saved to %s\n", SAVE_FILENAME);
-    return 0;
-}
-
-int loadGame(void) {
-    FILE *fp = fopen(SAVE_FILENAME, "r");
-    if (!fp) {
-        fprintf(stderr, "Error opening file %s: %s\n", SAVE_FILENAME, strerror(errno));
-        return -1;
-    }
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            fscanf(fp, "%d", &workingBoard[i][j]);
-        }
-    }
-    fclose(fp);
     return 0;
 }
 

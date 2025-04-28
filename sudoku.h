@@ -11,7 +11,7 @@
 #define SIZE 9
 typedef int Board[SIZE][SIZE];
 
-#define SAVE_FILENAME "savegame.txt"
+#define SAVE_FILENAME "sudoku_cli_savegame.txt"
 
 // ANSI color codes
 #define COLOR_CYAN   "\033[36m"  // Clues (initial board)
@@ -41,6 +41,9 @@ int solveSudoku(Board board);
 // Function prototypes from sudoku_cli.c
 int promptDifficulty(void);
 void displayBoard(void);
+int startGame(void);
+void trimInput(char *input);
+void clearInputBuffer();
 int parseInput(const char *input, int *row, int *col, int *value, char *command);
 int validateMove(int row, int col, int value);
 void updateBoardCell(int row, int col, int value);
