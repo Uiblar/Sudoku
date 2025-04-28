@@ -1,4 +1,5 @@
 #include "sudoku.h"
+#include "save_load.h"
 
 int main(void) {
     srand(time(NULL));
@@ -8,20 +9,27 @@ int main(void) {
         for (int j = 0; j < SIZE; j++)
             solverChanges[i][j] = 0;
 
-    printf("Welcome to the Sudoku CLI Game!\n");
-    int difficulty = promptDifficulty();
+    int isNewGame = startGame();
 
-    // 1. Generate puzzle into workingBoard.
-    generatePuzzle(workingBoard, difficulty);
-    // 2. Copy puzzle to initialBoard.
-    copyBoard(workingBoard, initialBoard);
-    // 3. Compute solvedBoard from initialBoard.
-    copyBoard(initialBoard, solvedBoard);
-    if (!solveSudoku(solvedBoard)) {
-        fprintf(stderr, "Error: Could not solve the puzzle.\n");
-        exit(1);
+    if (isNewGame) {
+        int difficulty = promptDifficulty();
+
+        // 1. Generate puzzle into workingBoard.
+        generatePuzzle(workingBoard, difficulty);
+        // 2. Copy puzzle to initialBoard.
+        copyBoard(workingBoard, initialBoard);
+        // 3. Compute solvedBoard from initialBoard.
+        copyBoard(initialBoard, solvedBoard);
+        if (!solveSudoku(solvedBoard)) {
+            fprintf(stderr, "Error: Could not solve the puzzle.\n");
+            exit(1);
+        }
+        printf("Generated a %s puzzle.\n", getDifficultyName(difficulty));
+    } else {
+        // displayBoard();
+        clearInputBuffer();
     }
-    printf("Generated a %s puzzle.\n", getDifficultyName(difficulty));
+
 
     char input[100];
     char command[20];
@@ -32,6 +40,8 @@ int main(void) {
         displayBoard();
         printf("Enter a move (e.g., A5:9) or command check(c), hint(h), resolve(r), save(s), load(l), submit, quit(q): ");
         fgets(input, sizeof(input), stdin);
+
+        trimInput(input);
 
         // Input validation
         if (input[0] == '\n' || strlen(input) >= sizeof(input) - 1) {
