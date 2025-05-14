@@ -44,6 +44,7 @@ void displayBoard(void);
 int startGame(void);
 void trimInput(char *input);
 void clearInputBuffer();
+void clearCli();
 int parseInput(const char *input, int *row, int *col, int *value, char *command);
 int validateMove(int row, int col, int value);
 void updateBoardCell(int row, int col, int value);

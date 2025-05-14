@@ -2,6 +2,8 @@
 #include "save_load.h"
 
 int main(void) {
+    clearCli();
+
     srand(time(NULL));
 
     // Initialize solverChanges to 0.
@@ -42,6 +44,8 @@ int main(void) {
         fgets(input, sizeof(input), stdin);
 
         trimInput(input);
+
+        clearCli();
 
         // Input validation
         if (input[0] == '\n' || strlen(input) >= sizeof(input) - 1) {

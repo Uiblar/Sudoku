@@ -2,7 +2,7 @@
 
 CC = gcc
 CFLAGS = -Wall -O2 -I.
-SRC = main.c sudoku_cli.c sudoku_hint.c sudoku_solver.c
+SRC = main.c sudoku_cli.c sudoku_hint.c sudoku_solver.c save_load.c
 OBJ_DIR = build
 BIN_DIR = bin
 OBJ = $(patsubst %.c,$(OBJ_DIR)/%.o,$(SRC))

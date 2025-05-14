@@ -53,6 +53,15 @@ void clearInputBuffer() {
     while ((c = getchar()) != '\n' && c != EOF);
 }
 
+void clearCli() {
+    // Clear the terminal screen
+    #ifdef _WIN32
+        system("cls");
+    #else
+        system("clear");
+    #endif
+}
+
 void displayBoard(void) {
     printf("      1  2  3   4  5  6   7  8  9\n");
     const char *line = "    +---------+---------+---------+\n";
