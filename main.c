@@ -11,10 +11,10 @@ int main(void) {
         for (int j = 0; j < SIZE; j++)
             solverChanges[i][j] = 0;
 
-    int isNewGame = startGame();
+    const int isNewGame = startGame();
 
     if (isNewGame) {
-        int difficulty = promptDifficulty();
+        const int difficulty = promptDifficulty();
 
         // 1. Generate puzzle into workingBoard.
         generatePuzzle(workingBoard, difficulty);

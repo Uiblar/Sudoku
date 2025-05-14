@@ -7,7 +7,7 @@ int promptDifficulty(void) {
         printf("Select difficulty (1 = Easy, 2 = Medium, 3 = Hard, 4 = Brutal): ");
         if (scanf("%d", &diff) != 1) {
             printf("Invalid input. Please enter a number between 1 and 4.\n");
-            while (getchar() != '\n');
+            while (getchar() != '\n') {}
             continue;
         }
         if (diff >= 1 && diff <= 4) {
@@ -28,7 +28,8 @@ int startGame(void) {
 
         if (choice == 'n' || choice == 'N') {
             return 1; // New game
-        } else if (choice == 'l' || choice == 'L') {
+        }
+        if (choice == 'l' || choice == 'L') {
             if (loadGame() == 0) {
                 printf("Loaded previous game successfully.\n");
                 return 0; // Load game
@@ -42,7 +43,7 @@ int startGame(void) {
 }
 
 void trimInput(char *input) {
-    size_t len = strlen(input);
+    const size_t len = strlen(input);
     if (len > 0 && input[len - 1] == '\n') {
         input[len - 1] = '\0';
     }
@@ -104,47 +105,52 @@ int parseInput(const char *input, int *row, int *col, int *value, char *command)
     if (isalpha((unsigned char)buf[0]) && isdigit((unsigned char)buf[1])) {
         *row = toupper(buf[0]) - 'A';
         *col = atoi(&buf[1]) - 1;
-        char *colon = strchr(buf, ':');
+        const char* colon = strchr(buf, ':');
         if (colon)
             *value = atoi(colon + 1);
         else
             *value = 0;
         strcpy(command, "move");
         return 1;
-    } else {
-        if (strcmp(buf, "check") == 0 || strcmp(buf, "c") == 0) {
-            strcpy(command, "check");
-            return 1;
-        } else if (strcmp(buf, "hint") == 0 || strcmp(buf, "h") == 0) {
-            strcpy(command, "hint");
-            return 1;
-        } else if (strcmp(buf, "resolve") == 0 || strcmp(buf, "r") == 0) {
-            strcpy(command, "resolve");
-            return 1;
-        } else if (strcmp(buf, "save") == 0 || strcmp(buf, "s") == 0) {
-            strcpy(command, "save");
-            return 1;
-        } else if (strcmp(buf, "load") == 0 || strcmp(buf, "l") == 0) {
-            strcpy(command, "load");
-            return 1;
-        } else if (strcmp(buf, "submit") == 0) {
-            strcpy(command, "submit");
-            return 1;
-        } else if (strcmp(buf, "quit") == 0 || strcmp(buf, "q") == 0) {
-            strcpy(command, "quit");
-            return 1;
-        }
+    }
+    if (strcmp(buf, "check") == 0 || strcmp(buf, "c") == 0) {
+        strcpy(command, "check");
+        return 1;
+    }
+    if (strcmp(buf, "hint") == 0 || strcmp(buf, "h") == 0) {
+        strcpy(command, "hint");
+        return 1;
+    }
+    if (strcmp(buf, "resolve") == 0 || strcmp(buf, "r") == 0) {
+        strcpy(command, "resolve");
+        return 1;
+    }
+    if (strcmp(buf, "save") == 0 || strcmp(buf, "s") == 0) {
+        strcpy(command, "save");
+        return 1;
+    }
+    if (strcmp(buf, "load") == 0 || strcmp(buf, "l") == 0) {
+        strcpy(command, "load");
+        return 1;
+    }
+    if (strcmp(buf, "submit") == 0) {
+        strcpy(command, "submit");
+        return 1;
+    }
+    if (strcmp(buf, "quit") == 0 || strcmp(buf, "q") == 0) {
+        strcpy(command, "quit");
+        return 1;
     }
     return 0;
 }
 
-int validateMove(int row, int col, int value) {
+int validateMove(const int row, const int col, const int value) {
     if (row < 0 || row >= SIZE || col < 0 || col >= SIZE || value < 1 || value > 9)
         return 0;
     return 1;
 }
 
-void updateBoardCell(int row, int col, int value) {
+void updateBoardCell(const int row, const int col, const int value) {
     if (initialBoard[row][col] != 0) {
         printf("Cannot overwrite an initial clue.\n");
         return;

@@ -7,19 +7,21 @@ Board solvedBoard;
 Board solverChanges;
 const char *difficultyNames[] = { "Easy", "Medium", "Hard", "Brutal" };
 
-const char* getDifficultyName(int difficulty) {
+const char* getDifficultyName(const int difficulty) {
     if (difficulty < 1 || difficulty > 4)
         return "Unknown";
     return difficultyNames[difficulty - 1];
 }
 
-int isSafe(const Board board, int row, int col, int num) {
+int isSafe(const Board board, const int row, const int col, const int num) {
     for (int i = 0; i < SIZE; i++) {
-        if (board[row][i] == num) return 0;
-        if (board[i][col] == num) return 0;
+        if (board[row][i] == num)
+            return 0;
+        if (board[i][col] == num)
+            return 0;
     }
-    int startRow = row - row % 3;
-    int startCol = col - col % 3;
+    const int startRow = row - row % 3;
+    const int startCol = col - col % 3;
     for (int r = 0; r < 3; r++)
         for (int c = 0; c < 3; c++)
             if (board[startRow + r][startCol + c] == num)
@@ -27,10 +29,10 @@ int isSafe(const Board board, int row, int col, int num) {
     return 1;
 }
 
-void shuffle(int *array, int n) {
+void shuffle(int *array, const int n) {
     for (int i = n - 1; i > 0; i--) {
-        int j = rand() % (i + 1);
-        int temp = array[i];
+        const int j = rand() % (i + 1);
+        const int temp = array[i];
         array[i] = array[j];
         array[j] = temp;
     }
@@ -98,8 +100,8 @@ int countSolutions(Board board) {
     return count;
 }
 
-bool removeCellsWithLimit(Board board, int cluesToKeep) {
-    int totalCells = SIZE * SIZE;
+bool removeCellsWithLimit(Board board, const int cluesToKeep) {
+    const int totalCells = SIZE * SIZE;
     int cellsToRemove = totalCells - cluesToKeep;
     int iterationCount = 0;
     const int MAX_ITERATIONS = 1000;
@@ -113,14 +115,14 @@ bool removeCellsWithLimit(Board board, int cluesToKeep) {
             return false;
         }
 
-        int row = rand() % SIZE;
-        int col = rand() % SIZE;
+        const int row = rand() % SIZE;
+        const int col = rand() % SIZE;
         if (board[row][col] != 0) {
-            int backup = board[row][col];
+            const int backup = board[row][col];
             board[row][col] = 0;
             Board temp;
             copyBoard(board, temp);
-            int solCount = countSolutions(temp);
+            const int solCount = countSolutions(temp);
             if (solCount != 1) {
                 board[row][col] = backup;
             } else {
@@ -131,7 +133,7 @@ bool removeCellsWithLimit(Board board, int cluesToKeep) {
     return true;
 }
 
-void generatePuzzle(Board board, int difficulty) {
+void generatePuzzle(Board board, const int difficulty) {
     int cluesToKeep;
     switch (difficulty) {
         case 1: cluesToKeep = 49; break; // Easy
@@ -157,7 +159,7 @@ void generatePuzzle(Board board, int difficulty) {
 
         // 3. Try to remove cells
         if (removeCellsWithLimit(board, cluesToKeep)) {
-            // Success, we got a puzzle with unique solution & # of clues
+            // Success, we got a puzzle with a unique solution & # of clues
             return;
         }
         // If removeCellsWithLimit() fails, we try again
@@ -165,21 +167,20 @@ void generatePuzzle(Board board, int difficulty) {
 
     // If we exit the loop, we failed to create a puzzle after MAX_RETRIES.
     // You could handle that gracefully:
-    fprintf(stderr, "Failed to create puzzle with %d clues after %d attempts.\n",
-            (SIZE*SIZE) - cluesToKeep, MAX_RETRIES);
+    fprintf(stderr, "Failed to create puzzle with %d clues after %d attempts.\n", (SIZE*SIZE) - cluesToKeep, MAX_RETRIES);
     exit(1);
 }
 
-int solveSudoku(Board brd) {
+int solveSudoku(Board board) {
     for (int row = 0; row < SIZE; row++) {
         for (int col = 0; col < SIZE; col++) {
-            if (brd[row][col] == 0) {
+            if (board[row][col] == 0) {
                 for (int num = 1; num <= SIZE; num++) {
-                    if (isSafe(brd, row, col, num)) {
-                        brd[row][col] = num;
-                        if (solveSudoku(brd))
+                    if (isSafe(board, row, col, num)) {
+                        board[row][col] = num;
+                        if (solveSudoku(board))
                             return 1;
-                        brd[row][col] = 0;
+                        board[row][col] = 0;
                     }
                 }
                 return 0;

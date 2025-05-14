@@ -35,15 +35,15 @@ int findLockedCandidates(int *outRow, int *outCol, int *outVal, char *rule) {
     // Iterate over each 3x3 box.
     for (int boxRow = 0; boxRow < 3; boxRow++) {
         for (int boxCol = 0; boxCol < 3; boxCol++) {
-            int startRow = boxRow * 3;
-            int startCol = boxCol * 3;
+            const int startRow = boxRow * 3;
+            const int startCol = boxCol * 3;
             for (int candidate = 1; candidate <= 9; candidate++) {
                 int rowCount[3] = {0, 0, 0};
                 // For each cell in the box:
                 for (int r = 0; r < 3; r++) {
                     for (int c = 0; c < 3; c++) {
-                        int cellRow = startRow + r;
-                        int cellCol = startCol + c;
+                        const int cellRow = startRow + r;
+                        const int cellCol = startCol + c;
                         if (workingBoard[cellRow][cellCol] == 0 && isSafe(workingBoard, cellRow, cellCol, candidate)) {
                             rowCount[r]++;
                         }
@@ -59,7 +59,7 @@ int findLockedCandidates(int *outRow, int *outCol, int *outVal, char *rule) {
                     }
                 }
                 if (countRows == 1) {
-                    int targetRow = startRow + uniqueRowIndex;
+                    const int targetRow = startRow + uniqueRowIndex;
                     // Find an empty cell in that row outside the current box.
                     for (int col = 0; col < SIZE; col++) {
                         if (col < startCol || col >= startCol + 3) {
@@ -134,16 +134,16 @@ int findHiddenSingle(int *outRow, int *outCol, int *outVal, char *rule) {
                     }
                 }
                 // Check 3x3 box uniqueness.
-                int startRow = r - r % 3;
-                int startCol = c - c % 3;
+                const int startRow = r - r % 3;
+                const int startCol = c - c % 3;
                 for (int num = 1; num <= 9; num++) {
                     if (!candidates[num])
                         continue;
                     int uniqueInBox = 1;
                     for (int rr = 0; rr < 3; rr++) {
                         for (int cc = 0; cc < 3; cc++) {
-                            int cellRow = startRow + rr;
-                            int cellCol = startCol + cc;
+                            const int cellRow = startRow + rr;
+                            const int cellCol = startCol + cc;
                             if (cellRow == r && cellCol == c)
                                 continue;
                             if (workingBoard[cellRow][cellCol] == 0 && isSafe(workingBoard, cellRow, cellCol, num))
