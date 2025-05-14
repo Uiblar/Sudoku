@@ -54,12 +54,7 @@ void clearInputBuffer() {
 }
 
 void clearCli() {
-    // Clear the terminal screen
-    #ifdef _WIN32
-        system("cls");
-    #else
-        system("clear");
-    #endif
+    printf("\033[H\033[J"); // Move cursor to top left and clear screen
 }
 
 void displayBoard(void) {
