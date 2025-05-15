@@ -135,10 +135,9 @@ int loadGame(void) {
 }
 
 bool checkSavedGameExists(void) {
-    FILE *file = fopen("saved_game.dat", "r");
-    if (file) {
-        fclose(file);
-        return true;
-    }
-    return false;
+    char savePath[512];
+    getSavePath(savePath, sizeof(savePath));
+
+    struct stat buffer;
+    return stat(savePath, &buffer) == 0;
 }

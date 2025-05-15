@@ -29,7 +29,7 @@ int startGame(void) {
         if (choice == 'n' || choice == 'N') {
             return 1; // New game
         } else if (choice == 'l' || choice == 'L') {
-            if (checkSavedGameExists()) {
+            if (!checkSavedGameExists()) {
                 printf("No saved game found. Starting a new game.\n");
                 return 1; // New game
             } else {
