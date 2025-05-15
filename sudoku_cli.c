@@ -29,12 +29,18 @@ int startGame(void) {
         if (choice == 'n' || choice == 'N') {
             return 1; // New game
         } else if (choice == 'l' || choice == 'L') {
-            if (loadGame() == 0) {
-                printf("Loaded previous game successfully.\n");
-                return 0; // Load game
+            if (checkSavedGameExists()) {
+                printf("No saved game found. Starting a new game.\n");
+                return 1; // New game
             } else {
-                printf("Failed to load the game. Please try again.\n");
+                if (loadGame() == 0) {
+                    printf("Loaded previous game successfully.\n");
+                    return 0; // Load game
+                } else {
+                    printf("Failed to load the game.\n");
+                }
             }
+
         } else {
             printf("Invalid choice. Please enter 'n' for a new game or 'l' to load a game.\n");
         }

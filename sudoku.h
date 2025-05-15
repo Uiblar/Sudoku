@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <ctype.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define SIZE 9
 typedef int Board[SIZE][SIZE];
@@ -49,8 +50,11 @@ int validateMove(int row, int col, int value);
 void updateBoardCell(int row, int col, int value);
 int checkBoard(void);
 int provideHint(int *outRow, int *outCol, int *outVal, char *rule);
+int isSolved(void);
+
+// Function prototypes from save_load.c
+bool checkSavedGameExists(void);
 int saveGame(void);
 int loadGame(void);
-int isSolved(void);
 
 #endif // SUDOKU_H

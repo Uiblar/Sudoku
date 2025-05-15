@@ -4,13 +4,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <stdbool.h>
 #include <errno.h>
 
 #ifdef _WIN32
-#include <direct.h> // Für mkdir unter Windows
+#include <direct.h> // For mkdir on Windows
 #define PATH_SEPARATOR "\\"
 #else
-#include <unistd.h> // Für Unix-basierte Systeme
+#include <unistd.h> // For Unix systems
 #define PATH_SEPARATOR "/"
 #endif
 
@@ -18,15 +19,15 @@ void getSavePath(char *path, size_t size) {
     const char *homeDir;
 
 #ifdef _WIN32
-    homeDir = getenv("USERPROFILE"); // Windows: Benutzerprofilverzeichnis
+    homeDir = getenv("USERPROFILE"); // Windows: User-Profiles
 #else
-    homeDir = getenv("HOME"); // Unix: Home-Verzeichnis
+    homeDir = getenv("HOME"); // Unix: Home-Directory
 #endif
 
     if (homeDir) {
         snprintf(path, size, "%s%sDocuments%sSudoku_CLI", homeDir, PATH_SEPARATOR, PATH_SEPARATOR);
 
-        // Verzeichnis erstellen, falls es nicht existiert
+        // Create directory if it doesn't exist
         struct stat st = {0};
         if (stat(path, &st) == -1) {
 #ifdef _WIN32
@@ -39,7 +40,7 @@ void getSavePath(char *path, size_t size) {
             }
             }
 
-            // Pfad zur Datei hinzufügen
+            // Path to savegame file
             snprintf(path, size, "%s%s%s", path, PATH_SEPARATOR, "savegame.txt");
         } else {
             fprintf(stderr, "Error: Could not determine home directory.\n");
@@ -131,4 +132,13 @@ int loadGame(void) {
     fclose(fp);
     printf("Game loaded from %s\n", savePath);
     return 0;
+}
+
+bool checkSavedGameExists(void) {
+    FILE *file = fopen("saved_game.dat", "r");
+    if (file) {
+        fclose(file);
+        return true;
+    }
+    return false;
 }
