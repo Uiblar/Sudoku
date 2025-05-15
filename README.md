@@ -26,6 +26,7 @@ This is a command-line Sudoku game implemented in C.
 - [ ] **Configuration File:** Instead of hardcoding `savegame.txt`, allow specifying the save file via command-line arguments or a configuration file.
 - [ ] **Cross-Platform Compatibility:** Ensure the code compiles and runs on both Windows and Linux. Verify that game saves (`savegame.txt`) created on one OS can be successfully loaded on the other.
 - [ ] **Undo/Redo Functionality:** Implement a mechanism to undo the last move(s).
+- [x] **Terminal Display Enhancement**: Screen Refresh
 
 ## Save and Load Functionality:
 
