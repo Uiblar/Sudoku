@@ -38,6 +38,16 @@ void shuffle(int *array, const int n) {
     }
 }
 
+void shufflePositions(Position *positions, const int size) {
+    for (int i = size - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        const Position temp = positions[i];
+        positions[i] = positions[j];
+        positions[j] = temp;
+    }
+}
+
+
 int generateCompleteBoard(Board board) {
     for (int row = 0; row < SIZE; row++) {
         for (int col = 0; col < SIZE; col++) {
@@ -103,35 +113,43 @@ int countSolutions(Board board) {
 bool removeCellsWithLimit(Board board, const int cluesToKeep) {
     const int totalCells = SIZE * SIZE;
     int cellsToRemove = totalCells - cluesToKeep;
-    int iterationCount = 0;
-    const int MAX_ITERATIONS = 1000;
 
-    while (cellsToRemove > 0) {
-        iterationCount++;
-        if (iterationCount % 200 == 0) {
-            printf("Attempting to remove cells... %d iterations so far.\n", iterationCount);
-        }
-        if (iterationCount > MAX_ITERATIONS) {
-            return false;
-        }
-
-        const int row = rand() % SIZE;
-        const int col = rand() % SIZE;
-        if (board[row][col] != 0) {
-            const int backup = board[row][col];
-            board[row][col] = 0;
-            Board temp;
-            copyBoard(board, temp);
-            const int solCount = countSolutions(temp);
-            if (solCount != 1) {
-                board[row][col] = backup;
-            } else {
-                cellsToRemove--;
-            }
+    Position positions[SIZE * SIZE];
+    int posIndex = 0;
+    for (int r = 0; r < SIZE; r++) {
+        for (int c = 0; c < SIZE; c++) {
+            positions[posIndex].row = r;
+            positions[posIndex].col = c;
+            posIndex++;
         }
     }
-    return true;
+
+    shufflePositions(positions, SIZE * SIZE);
+
+    for (int i = 0; i < SIZE * SIZE && cellsToRemove > 0; i++) {
+        const int r = positions[i].row;
+        const int c = positions[i].col;
+
+        if(board[r][c] == 0)
+            continue;
+
+        const int backup = board[r][c];
+        board[r][c] = 0;
+
+        Board temp;
+        copyBoard(board, temp);
+
+        const int solCount = countSolutions(temp);
+        if (solCount == 1) {
+            cellsToRemove--;
+        } else {
+            board[r][c] = backup;
+        }
+    }
+
+    return cellsToRemove == 0;
 }
+
 
 void generatePuzzle(Board board, const int difficulty) {
     int cluesToKeep;

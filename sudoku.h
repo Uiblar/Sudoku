@@ -11,6 +11,11 @@
 #define SIZE 9
 typedef int Board[SIZE][SIZE];
 
+typedef struct {
+    int row;
+    int col;
+} Position;
+
 #define SAVE_FILENAME "sudoku_cli_savegame.txt"
 
 // ANSI color codes

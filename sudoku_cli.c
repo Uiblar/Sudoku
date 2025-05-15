@@ -103,7 +103,7 @@ int parseInput(const char *input, int *row, int *col, int *value, char *command)
     buf[strcspn(buf, "\n")] = '\0';
 
     if (isalpha((unsigned char)buf[0]) && isdigit((unsigned char)buf[1])) {
-        *row = toupper(buf[0]) - 'A';
+        *row = toupper(buf[0]) - 'A'; // get zero based index by subtracting 'A' (e.g. A-A = 0, C-A=2)
         *col = atoi(&buf[1]) - 1;
         const char* colon = strchr(buf, ':');
         if (colon)
